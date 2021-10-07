@@ -1,17 +1,34 @@
 function getRandomInteger(min, max) {
-  const rand = min + Math.random() * (max + 1 - min);
+  const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
+  const upper = Math.floor(Math.max(Math.abs(min), Math.abs(max)));
+  const rand = Math.random() * (upper - lower + 1) + lower;
   return Math.floor(rand);
 }
 
 function getRandomDecimal(min, max, count) {
-  const rand = min + Math.random() * (max - min);
+  const lower = Math.min(Math.abs(min), Math.abs(max));
+  const upper = Math.max(Math.abs(min), Math.abs(max));
+  const rand = Math.random() * (upper - lower) + lower;
   return Number(rand.toFixed(count));
 }
 
-getRandomInteger(1, 5);
-getRandomDecimal(1, 5, 4);
+function createGenerator () {
+  let lastNumber = 0;
 
-const PICTURE_NUMBERS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10'];
+  return function () {
+    lastNumber += 1;
+    let authorId = '';
+    if (lastNumber < 10) {
+      authorId = `0${lastNumber}`;
+    } else {
+      authorId = lastNumber;
+    }
+    return `url(img/avatars/user${authorId}.png)`;
+  };
+}
+const generateAvatar = createGenerator();
+
+
 const TITLES = [
   'Хорошее жилье',
   'Прекрасный вариант',
@@ -57,30 +74,25 @@ const PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 
-const getArrayRandomLength = (array) => {
-  const resultArray = [];
-  for (let i = 0; i <= getRandomInteger(0, array.length - 1); i++) {
-    resultArray.push(array[i]);
-  }
-  return resultArray;
-};
+const getArrayRandomLength = (sourceArray) => sourceArray.slice(0, getRandomInteger(1, sourceArray.length));
 
-const getRandomArrayElement = (elements) => {
-  return elements[getRandomInteger(0, elements.length - 1)];
-};
+const getRandomArrayElement = (arr) => arr[getRandomInteger(0, arr.length - 1)];
 
-function createObject() {
+
+function createAdvertisement() {
+  const latitude = getRandomDecimal(35.65000, 35.70000, 5);
+  const longitude = getRandomDecimal(139.70000, 139.80000, 5);
   return {
     author: {
-      avatar : '',
+      avatar : generateAvatar(),
     },
     location : {
-      lat : 0,
-      lng : 0,
+      lat : latitude,
+      lng : longitude,
     },
     offer : {
       title : getRandomArrayElement(TITLES),
-      address : '',
+      address : `${latitude}, ${longitude}`,
       price : getRandomInteger(1, 10) * 1000,
       type : getRandomArrayElement(TYPE),
       rooms : getRandomInteger(1, 10),
@@ -95,15 +107,8 @@ function createObject() {
   };
 }
 
-const advertisements = [];
-for (let i = 0; i < PICTURE_NUMBERS.length; i++) {
-  const lat = getRandomDecimal(35.65000, 35.70000, 5);
-  const lng = getRandomDecimal(139.70000, 139.80000, 5);
-  const object = createObject();
-  object['author']['avatar'] = `url(img/avatars/user${PICTURE_NUMBERS[i]}.png)`;
-  object['offer']['address'] = `${lat}, ${lng}`;
-  object['location']['lat'] = lat;
-  object['location']['lng'] = lng;
-  advertisements.push(object);
-}
+const ADVERTISEMENTS_COUNT = 10;
 
+const advertisements = (count) => Array(count).fill(null).map(createAdvertisement);
+
+advertisements(ADVERTISEMENTS_COUNT);
