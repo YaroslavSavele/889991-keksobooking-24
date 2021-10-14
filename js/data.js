@@ -1,3 +1,5 @@
+import {getRandomInteger, getRandomDecimal, createGenerator, getArrayRandomLength, getRandomArrayElement} from './util.js';
+
 const TITLES = [
   'Хорошее жилье',
   'Прекрасный вариант',
@@ -43,5 +45,44 @@ const PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 
+const generateAvatar = createGenerator();
+/**
+ * Генерирует объект объявления
+ * @returns {Object} Описание объявления
+ */
+const generateAdvertisement = () => {
+  const latitude = getRandomDecimal(35.65000, 35.70000, 5);
+  const longitude = getRandomDecimal(139.70000, 139.80000, 5);
+  return {
+    author: {
+      avatar: generateAvatar(),
+    },
+    location: {
+      lat: latitude,
+      lng: longitude,
+    },
+    offer: {
+      title: getRandomArrayElement(TITLES),
+      address: `${latitude}, ${longitude}`,
+      price: getRandomInteger(1, 10) * 1000,
+      type: getRandomArrayElement(TYPE),
+      rooms: getRandomInteger(1, 10),
+      guests: getRandomInteger(1, 10),
+      checkin: getRandomArrayElement(TIMES),
+      checkout: getRandomArrayElement(TIMES),
+      features: getArrayRandomLength(FEATURES),
+      description: getRandomArrayElement(DESTCRIPTIONS),
+      photos: getArrayRandomLength(PHOTOS),
+    },
 
-export {TITLES, TYPE, TIMES, FEATURES, DESTCRIPTIONS, PHOTOS};
+  };
+};
+
+/**
+ *Возвращает массив сгенерированных объектов
+ * @param {number} count - Целое положительное число
+ * @returns {Object[]} Массив объектов
+ */
+const createAdvertisements = (count) => Array(count).fill(null).map(generateAdvertisement);
+
+export {createAdvertisements};

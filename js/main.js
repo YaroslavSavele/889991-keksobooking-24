@@ -1,7 +1,7 @@
-import {createAdvertisement} from './util.js';
+import {createAdvertisements} from './data.js';
 
 const ADVERTISEMENTS_COUNT = 10;
 
-const advertisements = (count) => Array(count).fill(null).map(createAdvertisement);
+const pinsData = createAdvertisements(ADVERTISEMENTS_COUNT);
 
-advertisements(ADVERTISEMENTS_COUNT);
+
