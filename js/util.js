@@ -39,7 +39,7 @@ const createGenerator = () => {
     lastNumber += 1;
     let authorId = '';
     (lastNumber < 10) ? authorId = `0${lastNumber}` : authorId = lastNumber;
-    return `url(img/avatars/user${authorId}.png)`;
+    return `img/avatars/user${authorId}.png`;
   };
 };
 
@@ -59,5 +59,36 @@ const getArrayRandomLength = (sourceArray) => sourceArray.slice(0, getRandomInte
  */
 const getRandomArrayElement = (arr) => arr[getRandomInteger(0, arr.length - 1)];
 
+/**
+ *Возвращает строку с правильным склонением слов в предложении
+ *Например "1 комната для 1 гостя" или "2 комнаты для трех гостей"
+ * @param {number} countRooms - Количество комнат
+ * @param {number} countGuests - Количество гостей
+ * @returns {string} - Корректно сформулированное предложение
+ */
+const getStringTrueDeclension = (countRooms, countGuests) => {
+  let room = 'комнат';
+  switch (countRooms) {
+    case 1:
+      room = 'комната';
+      break;
 
-export {getRandomInteger, getRandomDecimal, createGenerator, getArrayRandomLength, getRandomArrayElement};
+    case 2:
+    case 3:
+    case 4:
+      room = 'комнаты';
+      break;
+  }
+  const guest = (countGuests === 1) ? 'гостя' : 'гостей';
+
+  return `${countRooms} ${room} для ${countGuests} ${guest}`;
+};
+
+export {
+  getRandomInteger,
+  getRandomDecimal,
+  createGenerator,
+  getArrayRandomLength,
+  getRandomArrayElement,
+  getStringTrueDeclension
+};
