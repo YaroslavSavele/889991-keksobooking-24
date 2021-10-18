@@ -1,11 +1,8 @@
-import {createAdvertisements} from './data.js';
 import {getStringTrueDeclension} from './util.js';
 
-const ADVERTISEMENTS_COUNT = 10;
+
 const elementTemplate = document.querySelector('#card').content.querySelector('.popup');
-const similarAdvertisements = createAdvertisements(ADVERTISEMENTS_COUNT);
-const canvas = document.querySelector('#map-canvas');
-const fragment = document.createDocumentFragment();
+
 const HOUSINGS = {
   'palace': 'Дворец',
   'flat': 'Квартира',
@@ -13,56 +10,65 @@ const HOUSINGS = {
   'bungalow': 'Бунгало',
   'hotel': 'Отель',
 };
+/**
+ *Возвращает DocumentFragment с DOM-элементами, соответствующими объявлениям
+ * @param {Array} arrayAdvertisements - Массив сгенерированных объектов объявлений
+ * @returns {DocumentFragment} - DocumentFragment
+ */
+const generatePins = (arrayAdvertisements) => {
+  const fragment = document.createDocumentFragment();
 
-similarAdvertisements.forEach((advertisement) => {
-  const advertisementItem = elementTemplate.cloneNode(true);
-  advertisementItem.querySelector('.popup__title').textContent = advertisement.offer.title;
-  advertisementItem.querySelector('.popup__text--address').textContent = advertisement.offer.address;
+  arrayAdvertisements.forEach(({author, offer}) => {
+    const advertisementItem = elementTemplate.cloneNode(true);
+    advertisementItem.querySelector('.popup__title').textContent = offer.title;
+    advertisementItem.querySelector('.popup__text--address').textContent = offer.address;
 
-  const price = advertisementItem.querySelector('.popup__text--price');
-  price.textContent = (advertisement.offer.price) ? `${advertisement.offer.price} ₽/ночь` : '';
+    const price = advertisementItem.querySelector('.popup__text--price');
+    price.textContent = (offer.price) ? `${offer.price} ₽/ночь` : '';
 
-  advertisementItem.querySelector('.popup__type').textContent = HOUSINGS[advertisement.offer.type];
+    advertisementItem.querySelector('.popup__type').textContent = HOUSINGS[offer.type];
 
-  const capacity = advertisementItem.querySelector('.popup__text--capacity');
-  capacity.textContent = (advertisement.offer.rooms && advertisement.offer.guests) ? getStringTrueDeclension(advertisement.offer.rooms, advertisement.offer.guests) : '';
+    const capacity = advertisementItem.querySelector('.popup__text--capacity');
+    capacity.textContent = (offer.rooms && offer.guests) ? getStringTrueDeclension(offer.rooms, offer.guests) : '';
 
-  const time = advertisementItem.querySelector('.popup__text--time');
-  time.textContent = (advertisement.offer.checkin && advertisement.offer.checkout) ? `Заезд после ${advertisement.offer.checkin}, выезд до ${advertisement.offer.checkout}` : '';
+    const time = advertisementItem.querySelector('.popup__text--time');
+    time.textContent = (offer.checkin && offer.checkout) ? `Заезд после ${offer.checkin}, выезд до ${offer.checkout}` : '';
 
-  const listFeatures = advertisementItem.querySelector('.popup__features');
-  const features = listFeatures.querySelectorAll('.popup__feature');
+    const listFeatures = advertisementItem.querySelector('.popup__features');
+    const features = listFeatures.querySelectorAll('.popup__feature');
 
-  if (advertisement.offer.features) {
-    features.forEach((feature) => {
-      const isNecessary = advertisement.offer.features.some(
-        (element) => feature.classList.contains(`popup__feature--${element}`),
-      );
-      if (!isNecessary) {
-        feature.remove();
-      }
-    });
-  } else {
-    listFeatures.remove();
-  }
+    if (offer.features) {
+      features.forEach((feature) => {
+        const isNecessary = offer.features.some(
+          (element) => feature.classList.contains(`popup__feature--${element}`),
+        );
+        if (!isNecessary) {
+          feature.remove();
+        }
+      });
+    } else {
+      listFeatures.remove();
+    }
 
-  advertisementItem.querySelector('.popup__description').textContent = advertisement.offer.description;
+    advertisementItem.querySelector('.popup__description').textContent = offer.description;
 
-  const photosContainer = advertisementItem.querySelector('.popup__photos');
-  const photoTemplate = photosContainer.querySelector('.popup__photo');
-  photoTemplate.remove();
-  if (advertisement.offer.photos) {
-    advertisement.offer.photos.forEach((photo) => {
-      const photosItem = photoTemplate.cloneNode(true);
-      photosItem.src = photo;
-      photosContainer.appendChild(photosItem);
-    });
-  }
-  advertisementItem.querySelector('.popup__avatar').src = advertisement.author.avatar;
+    const photosContainer = advertisementItem.querySelector('.popup__photos');
+    const photoTemplate = photosContainer.querySelector('.popup__photo');
+    photoTemplate.remove();
+    if (offer.photos) {
+      offer.photos.forEach((photo) => {
+        const photosItem = photoTemplate.cloneNode(true);
+        photosItem.src = photo;
+        photosContainer.appendChild(photosItem);
+      });
+    }
+    advertisementItem.querySelector('.popup__avatar').src = author.avatar;
 
-  fragment.appendChild(advertisementItem);
-});
+    fragment.appendChild(advertisementItem);
+  });
+  return fragment;
+};
 
-canvas.appendChild(fragment.firstChild);
 
+export {generatePins};
 

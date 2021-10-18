@@ -35,7 +35,7 @@ const getRandomDecimal = (min, max, count = 1) => {
 const createGenerator = () => {
   let lastNumber = 0;
 
-  return function () {
+  return  () => {
     lastNumber += 1;
     let authorId = '';
     (lastNumber < 10) ? authorId = `0${lastNumber}` : authorId = lastNumber;
