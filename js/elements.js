@@ -4,18 +4,19 @@ import {getStringTrueDeclension} from './util.js';
 const elementTemplate = document.querySelector('#card').content.querySelector('.popup');
 
 const HOUSINGS = {
-  'palace': 'Дворец',
-  'flat': 'Квартира',
-  'house': 'Дом',
-  'bungalow': 'Бунгало',
-  'hotel': 'Отель',
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalow: 'Бунгало',
+  hotel: 'Отель',
 };
+
 /**
  *Возвращает DocumentFragment с DOM-элементами, соответствующими объявлениям
  * @param {Array} arrayAdvertisements - Массив сгенерированных объектов объявлений
  * @returns {DocumentFragment} - DocumentFragment
  */
-const generatePins = (arrayAdvertisements) => {
+const renderCards = (arrayAdvertisements) => {
   const fragment = document.createDocumentFragment();
 
   arrayAdvertisements.forEach(({author, offer}) => {
@@ -70,5 +71,5 @@ const generatePins = (arrayAdvertisements) => {
 };
 
 
-export {generatePins};
+export {renderCards};
 
