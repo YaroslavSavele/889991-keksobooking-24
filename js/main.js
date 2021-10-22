@@ -1,7 +1,10 @@
-import {createAdvertisement} from './util.js';
+import {createAdvertisements} from './data.js';
+import {renderCards} from './elements.js';
 
-const ADVERTISEMENTS_COUNT = 10;
 
-const advertisements = (count) => Array(count).fill(null).map(createAdvertisement);
+const ADVERTISEMENTS_COUNT = 1;
+const similarAdvertisements = createAdvertisements(ADVERTISEMENTS_COUNT);
 
-advertisements(ADVERTISEMENTS_COUNT);
+const cards = renderCards(similarAdvertisements);
+const mapCanvas = document.querySelector('#map-canvas');
+mapCanvas.appendChild(cards);
