@@ -46,6 +46,7 @@ const PHOTOS = [
 ];
 
 const generateAvatar = createGenerator();
+
 /**
  * Генерирует объект объявления
  * @returns {Object} Описание объявления
@@ -85,4 +86,4 @@ const generateAdvertisement = () => {
  */
 const createAdvertisements = (count) => Array(count).fill(null).map(generateAdvertisement);
 
-export {createAdvertisements};
+export {generateAdvertisement, createAdvertisements};
