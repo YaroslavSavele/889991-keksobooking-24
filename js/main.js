@@ -1,10 +1,12 @@
-import {createAdvertisements} from './data.js';
-import {renderCards} from './elements.js';
+import {generateAdvertisement} from './data.js';
+import {renderCard} from './elements.js';
+import {makesFormsInactive, makesFormsActive} from './form.js';
 
 
-const ADVERTISEMENTS_COUNT = 1;
-const similarAdvertisements = createAdvertisements(ADVERTISEMENTS_COUNT);
-
-const cards = renderCards(similarAdvertisements);
+const advertisement = generateAdvertisement();
+const card = renderCard(advertisement);
 const mapCanvas = document.querySelector('#map-canvas');
-mapCanvas.appendChild(cards);
+mapCanvas.appendChild(card);
+
+makesFormsInactive();
+makesFormsActive();
