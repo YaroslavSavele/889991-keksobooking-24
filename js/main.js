@@ -1,6 +1,6 @@
 import {generateAdvertisement} from './data.js';
-import {renderCard} from './elements.js';
-import {makesFormsInactive, makesFormsActive} from './form.js';
+import {renderCard} from './card.js';
+import {makesFormsInactive, makesFormsActive, validateTitle, validateCountGuest, validatePrice} from './forms.js';
 
 
 const advertisement = generateAdvertisement();
@@ -10,3 +10,6 @@ mapCanvas.appendChild(card);
 
 makesFormsInactive();
 makesFormsActive();
+validateTitle();
+validatePrice();
+validateCountGuest();
