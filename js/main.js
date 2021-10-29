@@ -1,6 +1,6 @@
 import {generateAdvertisement} from './data.js';
 import {renderCard} from './card.js';
-import {makesFormsInactive, makesFormsActive, validateTitle, validateCountGuest, validatePrice} from './forms.js';
+import {makesFormsInactive, makesFormsActive, validateTitle, validateCountGuest, validatePrice, synchronizesTime} from './forms.js';
 
 
 const advertisement = generateAdvertisement();
@@ -13,3 +13,4 @@ makesFormsActive();
 validateTitle();
 validatePrice();
 validateCountGuest();
+synchronizesTime();
