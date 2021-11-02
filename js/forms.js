@@ -86,30 +86,25 @@ const roomsGuests = {
  */
 export const validateCountGuest = () => {
   roomNamber.addEventListener('input', () => {
-    capacity[0].disabled = true;
-    capacity[1].disabled = true;
-    capacity[2].disabled = true;
-    capacity[3].disabled = true;
-    if (roomNamber.value === '100') {
-      capacity[3].disabled = false;
-      capacity[3].selected = true;
-    } else {
-      roomsGuests[roomNamber.value].forEach((numberGuest, index) => {
-        capacity[index].disabled = false;
-        capacity[index].selected = true;
-      });
-    }
+    const options = [capacity[0], capacity[1], capacity[2], capacity[3]];
+    options.forEach((option) => {
+      option.disabled = true;
+      if (roomsGuests[roomNamber.value].includes(Number(option.value))) {
+        option.disabled = false;
+        option.selected = true;
+      }
+    });
   });
 };
 
 const housingType = document.querySelector('#type');
 const price = document.querySelector('#price');
 const typePrice = {
-  'bungalow': 0,
-  'flat': 1000,
-  'hotel': 3000,
-  'house': 5000,
-  'palace': 10000,
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
 };
 /**
  * Изменяет минимальное значение поля "Цена за ночь",
@@ -133,19 +128,21 @@ const filsetTime = document.querySelector('.ad-form__element--time');
 export const synchronizesTime = () => {
   filsetTime.addEventListener('input', (evt) => {
     if (evt.target === timein) {
-      for (let i = 0; i < timeout.length; i++) {
-        if (timeout[i].value === evt.target.value) {
-          timeout[i].selected = true;
-        }
-      }
+      timeout.value = evt.target.value;
     } else if (evt.target === timeout) {
-      for (let i = 0; i < timein.length; i++) {
-        if (timein[i].value === evt.target.value) {
-          timein[i].selected = true;
-        }
-      }
+      timein.value = evt.target.value;
     }
   });
 };
-export {makesFormsInactive, makesFormsActive};
+/**
+ * Объединяет функции, валидирующие поля формы
+ */
+const validateForm = () => {
+  validateTitle();
+  validatePrice();
+  validateCountGuest();
+  synchronizesTime();
+};
+
+export {makesFormsInactive, makesFormsActive, validateForm};
 
