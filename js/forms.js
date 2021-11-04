@@ -25,16 +25,17 @@ const makesFormsInactive = () => {
   mapFeatures.disabled = true;
 };
 
-
+const address = document.querySelector('#address');
 /**
  * Делает формы активными
  */
-const makesFormsActive = () => {
+const makesFormsActive = (lat, lng) => {
   form.classList.remove('ad-form--disabled');
   formElements.forEach((formElement) => {
     formElement.disabled = false;
   });
   formHeader.disabled = false;
+  address.value = `${lat}, ${lng}`;
 
   mapFilter.classList.remove('map__filters--disabled');
   filters.forEach((filter) => {
@@ -86,8 +87,7 @@ const roomsGuests = {
  */
 export const validateCountGuest = () => {
   roomNamber.addEventListener('input', () => {
-    const options = [capacity[0], capacity[1], capacity[2], capacity[3]];
-    options.forEach((option) => {
+    Object.values(capacity).forEach((option) => {
       option.disabled = true;
       if (roomsGuests[roomNamber.value].includes(Number(option.value))) {
         option.disabled = false;
