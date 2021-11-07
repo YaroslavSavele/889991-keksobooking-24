@@ -93,4 +93,4 @@ const generatePins = (advertisements, map) => {
   });
 };
 
-export {createMap, getMainMarker, showAddress, generatePins};
+export {createMap, getMainMarker, showAddress, generatePins, LATITUDE, LONGITUDE};

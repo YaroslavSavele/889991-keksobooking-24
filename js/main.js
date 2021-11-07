@@ -1,11 +1,11 @@
-import {generateAdvertisement, createAdvertisements} from './data.js';
-import {makesFormsInactive, validateForm} from './forms.js';
+//import {generateAdvertisement, createAdvertisements} from './data.js';
+import {getData } from './api.js';
+import {makesFormsInactive, validateForm, setUserFormSubmit} from './forms.js';
 import {createMap, getMainMarker,  showAddress, generatePins} from './map.js';
+import './forms.js';
 
 const ADVERTISEMENTS_COUNT = 10;
 
-const advertisement = generateAdvertisement();
-const advertisements = createAdvertisements(ADVERTISEMENTS_COUNT);
 makesFormsInactive();
 validateForm();
 const map = createMap();
@@ -13,6 +13,10 @@ const map = createMap();
 const mainPinMarker = getMainMarker();
 mainPinMarker.addTo(map);
 showAddress(mainPinMarker);
-generatePins(advertisements, map);
 
+getData((advertisements) => {
+  generatePins(advertisements.slice(0, ADVERTISEMENTS_COUNT), map);
+});
+
+setUserFormSubmit(mainPinMarker, map);
 

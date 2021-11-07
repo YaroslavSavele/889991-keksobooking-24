@@ -1,3 +1,6 @@
+import { setData } from './api.js';
+import {LATITUDE, LONGITUDE} from './map.js';
+
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 
@@ -144,5 +147,102 @@ const validateForm = () => {
   synchronizesTime();
 };
 
-export {makesFormsInactive, makesFormsActive, validateForm};
+/**
+ * Очищает поля форм, приводит их в первоначальное состояние,
+ * возвращает главный маркер в центр, возвращает карту в центр,
+ * созвращает маштаб карты, закрывает открытый балун
+ * @param {Object} marker Объект маркера
+ * @param {Object} map Объект карты
+ */
+const onReset = (marker, map) => {
+  form.reset();
+  mapFilter.reset();
+  marker.setLatLng({
+    lat: LATITUDE,
+    lng: LONGITUDE,
+  });
+  address.value = `${LATITUDE}, ${LONGITUDE}`;
+  map.setView({
+    lat: LATITUDE,
+    lng: LONGITUDE,
+  }, 13);
+  map.closePopup();
+  price.placeholder = typePrice[housingType.value];
+  price.min = typePrice[housingType.value];
+};
+
+const succesTemplate = document.querySelector('#success').content.querySelector('.success');
+/**
+ * Показывает сообщение об успешной отправке данных формы на сервер,
+ * при клике в любую сообщения или при нажатии клавиши Escape
+ * сообщение убирается, поля формы, поля фильтра и карта приходят
+ * в первоначальное состояние
+ * @param {Object} marker Объект главного маркера
+ * @param {Object} map Объект карты
+ */
+const onSuccess = (marker, map) => {
+  const successMessage = succesTemplate.cloneNode(true);
+  document.body.appendChild(successMessage);
+
+  successMessage.addEventListener('click', () => {
+    successMessage.remove();
+    onReset(marker, map);
+  });
+  document.body.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      successMessage.remove();
+      onReset(marker, map);
+    }
+  });
+};
+
+const errorTemplate = document.querySelector('#error').content.querySelector('.error');
+/**
+ * Показывает сообщение о том что данные формы не отправились,
+ * при клике на кнопку "Попрововать снова" или по свободной области, а также
+ * при нажатии клавиши Escape сообщение закрывается, поля формы остаются в том же состоянии
+ */
+const onFail = () => {
+  const errorMessage = errorTemplate.cloneNode(true);
+  document.body.appendChild(errorMessage);
+  const errorButton = errorMessage.querySelector('.error__button');
+  errorButton.addEventListener('click', () => {
+    errorMessage.remove();
+  });
+  errorMessage.addEventListener('click', () => {
+    errorMessage.remove();
+  });
+  document.body.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      errorMessage.remove();
+    }
+  });
+};
+const reset = form.querySelector('.ad-form__reset');
+/**
+ * При клике по кнопке опубликовать
+ * отправляет данные формы на сервер.
+ * При клике по кнопке очистить очищает поля форм и возвращает карту
+ * в первоначальное состояние.
+ * @param {*} marker
+ * @param {*} map
+ */
+const setUserFormSubmit = (marker, map) => {
+  form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    setData(
+      () => onSuccess(marker, map),
+      () => onFail(),
+      new FormData(evt.target),
+    );
+  });
+  reset.addEventListener('click', () => {
+    onReset(marker, map);
+  });
+};
+
+
+export {makesFormsInactive, makesFormsActive, validateForm, setUserFormSubmit};
+
 

@@ -133,7 +133,7 @@
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="capacity">Количество мест</label>
           <select id="capacity" name="capacity" required>
-            <option value="1">для 1 гостя</option>
+            <option value="1" selected>для 1 гостя</option>
             <option value="2" disabled>для 2 гостей</option>
             <option value="3" disabled>для 3 гостей</option>
             <option value="0" disabled>не для гостей</option>
@@ -225,9 +225,9 @@
 
   <!-- Сообщение об ошибке создания объявления -->
   <template id="error">
-    <div class="error">
+    <div class="error" >
       <p class="error__message">Ошибка размещения объявления</p>
-      <button type="button" class="error__button">Попробовать снова</button>
+      <button type="button" class="error__button" tabindex="1">Попробовать снова</button>
     </div>
   </template>
 <script src="leaflet/leaflet.js"></script>
