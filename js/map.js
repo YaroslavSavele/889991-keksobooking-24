@@ -1,25 +1,22 @@
 import {makesFormsActive} from './forms.js';
-import {createAdvertisements} from './data.js';
 import {renderCard} from './card.js';
 
-const ADVERTISEMENTS_COUNT = 10;
+
+const LATITUDE = 35.67476;
+const LONGITUDE = 139.74999;
 
 /**
- * Выводит карту Токио, переводит в страницу в активное состояние после инициализации карты.
- * Добавляет на карту специальную, «главную», метку, перемещая эту метку пользователь выбирает адрес
- * своего объявления.
- * Добавляет на карту метки 10 похожих объявлений. При клике на каждую из них
- * происходит показ балуна с подробной информацией об объявлении.
- *
+ * Выводит карту Токио, переводит в формы в активное состояние после инициализации карты.
+ *  @returns {Object} Объект карты.
  */
 const createMap = () => {
   const map = L.map('map-canvas')
     .on('load', () => {
-      makesFormsActive();
+      makesFormsActive(LATITUDE, LONGITUDE);
     })
     .setView({
-      lat: 35.67500,
-      lng: 139.75000,
+      lat: LATITUDE,
+      lng: LONGITUDE,
     }, 13);
 
   L.tileLayer(
@@ -28,35 +25,56 @@ const createMap = () => {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     },
   ).addTo(map);
+  return map;
+};
 
+/**
+ * Добавляет на карту специальную, «главную», метку, перемещая эту метку пользователь выбирает адрес
+ * своего объявления.
+ * @returns {Object} Объект метки
+ */
+const getMainMarker = () => {
   const mainPinIcon = L.icon({
-    iconUrl: '../img/main-pin.svg',
+    iconUrl: './img/main-pin.svg',
     iconSize: [52, 52],
     iconAnchor: [26, 52],
   });
   const mainPinMarker = L.marker(
     {
-      lat: 35.67500,
-      lng: 139.75000,
+      lat: LATITUDE,
+      lng: LONGITUDE,
     },
     {
       draggable: true,
       icon: mainPinIcon,
     },
   );
-  mainPinMarker.addTo(map);
+  return mainPinMarker;
+};
+
+/**
+ * Показывает в поле адреса координаты метки
+ * @param {Object} marker Объект метки
+ */
+const showAddress = (marker) => {
   const addressField = document.querySelector('#address');
-  mainPinMarker.on('moveend', (evt) => {
+  marker.on('moveend', (evt) => {
     const lat = evt.target.getLatLng().lat.toFixed(5);
     const lng = evt.target.getLatLng().lng.toFixed(5);
     addressField.value = `${lat}, ${lng}`;
   });
-
-  const advertisements = createAdvertisements(ADVERTISEMENTS_COUNT);
+};
+/**
+ * Добавляет на карту метки 10 похожих объявлений. При клике на каждую из них
+ * происходит показ балуна с подробной информацией об объявлении.
+ * @param {Array} advertisements Массив объектов объявлений
+ * @param {Object} map Объект карты
+ */
+const generatePins = (advertisements, map) => {
   advertisements.forEach((advertisement) => {
     const {location: {lat, lng}} = advertisement;
     const icon = L.icon({
-      iconUrl: '../img/pin.svg',
+      iconUrl: './img/pin.svg',
       iconSize: [40, 40],
       iconAnchor: [20, 40],
     });
@@ -75,4 +93,4 @@ const createMap = () => {
   });
 };
 
-export {createMap};
+export {createMap, getMainMarker, showAddress, generatePins, LATITUDE, LONGITUDE};
