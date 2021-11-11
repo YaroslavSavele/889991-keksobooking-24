@@ -4,7 +4,7 @@ import {renderCard} from './card.js';
 
 const LATITUDE = 35.67476;
 const LONGITUDE = 139.74999;
-
+const SCALE = 13;
 /**
  * Выводит карту Токио, переводит в формы в активное состояние после инициализации карты.
  *  @returns {Object} Объект карты.
@@ -17,7 +17,7 @@ const createMap = () => {
     .setView({
       lat: LATITUDE,
       lng: LONGITUDE,
-    }, 13);
+    }, SCALE);
 
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -93,4 +93,4 @@ const generatePins = (advertisements, map) => {
   });
 };
 
-export {createMap, getMainMarker, showAddress, generatePins, LATITUDE, LONGITUDE};
+export {createMap, getMainMarker, showAddress, generatePins, LATITUDE, LONGITUDE, SCALE};

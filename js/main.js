@@ -2,7 +2,7 @@
 import {getData } from './api.js';
 import {makesFormsInactive, validateForm, setUserFormSubmit} from './forms.js';
 import {createMap, getMainMarker,  showAddress, generatePins} from './map.js';
-import './forms.js';
+
 
 const ADVERTISEMENTS_COUNT = 10;
 

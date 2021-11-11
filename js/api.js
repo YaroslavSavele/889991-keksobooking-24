@@ -30,10 +30,11 @@ const getData = (onSuccess) => {
  * @param {*} body Данные формы в виде FormData
  */
 const setData = (onSuccess, onFail, body) => {
-  fetch('https://24.javascript.pages.academy/keksobooking',
+  fetch('https://jsonplaceholder.typicode.com/posts',
     {
       method: 'POST',
       headers: {'Content-Type': 'multipart/form-data'},
+      //mode: 'no-cors',
       body,
     },
   ).then((response) => {

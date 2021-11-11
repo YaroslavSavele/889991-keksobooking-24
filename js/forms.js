@@ -1,5 +1,5 @@
 import { setData } from './api.js';
-import {LATITUDE, LONGITUDE} from './map.js';
+import {LATITUDE, LONGITUDE, SCALE} from './map.js';
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -165,13 +165,15 @@ const onReset = (marker, map) => {
   map.setView({
     lat: LATITUDE,
     lng: LONGITUDE,
-  }, 13);
+  }, SCALE);
   map.closePopup();
   price.placeholder = typePrice[housingType.value];
   price.min = typePrice[housingType.value];
 };
 
 const succesTemplate = document.querySelector('#success').content.querySelector('.success');
+
+
 /**
  * Показывает сообщение об успешной отправке данных формы на сервер,
  * при клике в любую сообщения или при нажатии клавиши Escape
@@ -183,17 +185,19 @@ const succesTemplate = document.querySelector('#success').content.querySelector(
 const onSuccess = (marker, map) => {
   const successMessage = succesTemplate.cloneNode(true);
   document.body.appendChild(successMessage);
-
+  const onSuccesEscKeydown = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      successMessage.remove();
+      onReset(marker, map);
+      document.removeEventListener('keydown', onSuccesEscKeydown);
+    }
+  };
   successMessage.addEventListener('click', () => {
     successMessage.remove();
     onReset(marker, map);
   });
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      successMessage.remove();
-      onReset(marker, map);
-    }
-  });
+  document.addEventListener('keydown', onSuccesEscKeydown);
 };
 
 const errorTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -206,17 +210,20 @@ const onFail = () => {
   const errorMessage = errorTemplate.cloneNode(true);
   document.body.appendChild(errorMessage);
   const errorButton = errorMessage.querySelector('.error__button');
+  const onErrorEscKeydown = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      errorMessage.remove();
+      document.removeEventListener('keydown', onErrorEscKeydown);
+    }
+  };
   errorButton.addEventListener('click', () => {
     errorMessage.remove();
   });
   errorMessage.addEventListener('click', () => {
     errorMessage.remove();
   });
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      errorMessage.remove();
-    }
-  });
+  document.addEventListener('keydown', onErrorEscKeydown);
 };
 const reset = form.querySelector('.ad-form__reset');
 /**
@@ -233,7 +240,7 @@ const setUserFormSubmit = (marker, map) => {
 
     setData(
       () => onSuccess(marker, map),
-      () => onFail(),
+      onFail,
       new FormData(evt.target),
     );
   });
@@ -244,5 +251,3 @@ const setUserFormSubmit = (marker, map) => {
 
 
 export {makesFormsInactive, makesFormsActive, validateForm, setUserFormSubmit};
-
-
