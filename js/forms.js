@@ -1,5 +1,5 @@
 import { setData } from './api.js';
-import {LATITUDE, LONGITUDE, SCALE} from './map.js';
+import { LATITUDE, LONGITUDE, SCALE } from './map.js';
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -20,7 +20,8 @@ const makesFormsInactive = () => {
     formElement.disabled = true;
   });
   formHeader.disabled = true;
-
+};
+const makesFiltersInactive = () => {
   mapFilter.classList.add('map__filters--disabled');
   filters.forEach((filter) => {
     filter.disabled = true;
@@ -114,7 +115,7 @@ const typePrice = {
  * в зависимости от выбора типа жилья
  */
 export const validatePrice = () => {
-  housingType.addEventListener ('input', () => {
+  housingType.addEventListener('input', () => {
     price.placeholder = typePrice[housingType.value];
     price.min = typePrice[housingType.value];
   });
@@ -250,4 +251,10 @@ const setUserFormSubmit = (marker, map) => {
 };
 
 
-export {makesFormsInactive, makesFormsActive, validateForm, setUserFormSubmit};
+export {
+  makesFormsInactive,
+  makesFormsActive,
+  validateForm,
+  setUserFormSubmit,
+  makesFiltersInactive
+};

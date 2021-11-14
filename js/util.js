@@ -43,7 +43,35 @@ const showAlert = (message) => {
   document.body.append(alertContainer);
 };
 
+const convertsNumberToValue = (number) => {
+  let result ;
+  if (number < 10000) {
+    result = 'low';
+  } else if (number >= 10000 && number <= 50000) {
+    result = 'middle';
+  } else if ( number > 50000) {
+    result = 'high';
+  }
+  return result;
+};
+
+/**
+ *Задерживает выполнение функции на определенное время
+ * @param {myCallback} callback - Функция, выполнение которой нужно задержать
+ * @param {number} timeoutDelay - Время задержки в миллисекундах
+ * @returns
+ */
+const debounce = (callback, timeoutDelay = 500) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
 export {
   getStringTrueDeclension,
-  showAlert
+  showAlert,
+  convertsNumberToValue,
+  debounce
 };
