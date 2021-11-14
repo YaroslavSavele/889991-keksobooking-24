@@ -33,6 +33,3 @@ getData((advertisements) => {
 });
 
 setUserFormSubmit(mainPinMarker, map);
-
-
-

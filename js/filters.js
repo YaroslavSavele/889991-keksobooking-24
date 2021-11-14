@@ -92,10 +92,9 @@ const filtersByGuests =({offer}) => {
 const filtersByFeatures =({offer}) => {
   if (getFeatures().length === 0) {
     return true;
+  } else if (offer.features.sort().join() === getFeatures().sort().join()) {
+    return true;
   }
-  //else if (offer.features.sort().join() === getFeatures().sort().join()) {
-  //  return true;
-  //}
 };
 
 /**
