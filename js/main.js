@@ -24,12 +24,13 @@ const markersGroup = L.layerGroup().addTo(map);
 showAddress(mainPinMarker);
 
 getData((advertisements) => {
-  generatePins(advertisements, map, markersGroup);
-  setTypeSelect(debounce(() => generatePins(advertisements, map, markersGroup), RERENDER_DELAY));
-  setPriceSelect(debounce(() => generatePins(advertisements, map, markersGroup), RERENDER_DELAY));
-  setRoomsSelect(debounce(() => generatePins(advertisements, map, markersGroup), RERENDER_DELAY));
-  setGuestsSelect(debounce(() => generatePins(advertisements, map, markersGroup), RERENDER_DELAY));
-  setFeaturessSelect(debounce(() => generatePins(advertisements, map, markersGroup), RERENDER_DELAY));
+  generatePins(advertisements, markersGroup);
+  setTypeSelect(debounce(() => generatePins(advertisements, markersGroup), RERENDER_DELAY));
+  setPriceSelect(debounce(() => generatePins(advertisements, markersGroup), RERENDER_DELAY));
+  setRoomsSelect(debounce(() => generatePins(advertisements, markersGroup), RERENDER_DELAY));
+  setGuestsSelect(debounce(() => generatePins(advertisements, markersGroup), RERENDER_DELAY));
+  setFeaturessSelect(debounce(() => generatePins(advertisements, markersGroup), RERENDER_DELAY));
 });
 
-setUserFormSubmit(mainPinMarker, map);
+setUserFormSubmit(mainPinMarker, map, markersGroup);
+

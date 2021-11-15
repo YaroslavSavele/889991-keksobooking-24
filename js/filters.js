@@ -32,7 +32,8 @@ const getFeatures = () => {
 const filtersByType =({offer}) => {
   if (housingType.value === 'any') {
     return true;
-  } else if (offer.type === housingType.value) {
+  }
+  if (offer.type === housingType.value) {
     return true;
   }
 };
@@ -47,7 +48,8 @@ const filtersByType =({offer}) => {
 const filtersByPrice =({offer}) => {
   if (housingPrice.value === 'any') {
     return true;
-  } else if (convertsNumberToValue(offer.price) === housingPrice.value) {
+  }
+  if (convertsNumberToValue(offer.price) === housingPrice.value) {
     return true;
   }
 };
@@ -62,7 +64,8 @@ const filtersByPrice =({offer}) => {
 const filtersByRooms =({offer}) => {
   if (housingRooms.value === 'any') {
     return true;
-  } else if (offer.rooms === Number(housingRooms.value)) {
+  }
+  if (offer.rooms === Number(housingRooms.value)) {
     return true;
   }
 };
@@ -77,7 +80,8 @@ const filtersByRooms =({offer}) => {
 const filtersByGuests =({offer}) => {
   if (housingGuests.value === 'any') {
     return true;
-  } else if (offer.guests === Number(housingGuests.value)) {
+  }
+  if (offer.guests === Number(housingGuests.value)) {
     return true;
   }
 };
@@ -90,12 +94,19 @@ const filtersByGuests =({offer}) => {
  * @returns {boolean}
  */
 const filtersByFeatures =({offer}) => {
-  if (getFeatures().length === 0) {
-    return true;
-  } else if (offer.features.sort().join() === getFeatures().sort().join()) {
+  const checkListElements = getFeatures();
+  if (checkListElements.length === 0) {
     return true;
   }
+  if (checkListElements.length) {
+    checkListElements.forEach((feature) => {
+      if (offer.features.includes(feature)) {
+        return true;
+      }
+    });
+  }
 };
+
 
 /**
  * Передает колбэк при изменении значения

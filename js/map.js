@@ -75,7 +75,7 @@ const showAddress = (marker) => {
  * @param {Object} map Объект карты
  * @param {Object} markersGroup Объект слоя карты с маркерами похожих обхъявлений
  */
-const generatePins = (advertisements, map, markersGroup) => {
+const generatePins = (advertisements, markersGroup) => {
   markersGroup.clearLayers();
   let pins = advertisements.slice();
   pins = pins.filter(filtersByType);

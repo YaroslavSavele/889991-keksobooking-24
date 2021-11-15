@@ -1,5 +1,5 @@
-import { setData } from './api.js';
-import { LATITUDE, LONGITUDE, SCALE } from './map.js';
+import { setData, getData } from './api.js';
+import { generatePins, LATITUDE, LONGITUDE, SCALE } from './map.js';
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -168,6 +168,7 @@ const onReset = (marker, map) => {
     lng: LONGITUDE,
   }, SCALE);
   map.closePopup();
+  //layer.clearLayers();
   price.placeholder = typePrice[housingType.value];
   price.min = typePrice[housingType.value];
 };
@@ -182,22 +183,32 @@ const succesTemplate = document.querySelector('#success').content.querySelector(
  * в первоначальное состояние
  * @param {Object} marker Объект главного маркера
  * @param {Object} map Объект карты
+ * @param {Object} layer Объект слоя маркеров похожих объявлений
  */
-const onSuccess = (marker, map) => {
+const onSuccess = (marker, map, layer) => {
   const successMessage = succesTemplate.cloneNode(true);
   document.body.appendChild(successMessage);
+
   const onSuccesEscKeydown = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       successMessage.remove();
       onReset(marker, map);
+      getData((advertisements) => {
+        generatePins(advertisements, layer);
+      });
       document.removeEventListener('keydown', onSuccesEscKeydown);
     }
   };
+
   successMessage.addEventListener('click', () => {
     successMessage.remove();
     onReset(marker, map);
+    getData((advertisements) => {
+      generatePins(advertisements, layer);
+    });
   });
+
   document.addEventListener('keydown', onSuccesEscKeydown);
 };
 
@@ -232,21 +243,26 @@ const reset = form.querySelector('.ad-form__reset');
  * отправляет данные формы на сервер.
  * При клике по кнопке очистить очищает поля форм и возвращает карту
  * в первоначальное состояние.
- * @param {*} marker
- * @param {*} map
+ * @param {Object} marker Объект главного маркера
+ * @param {Object} map Объект карты
+ * @param {Object} layer Объект слоя маркеров похожих объявлений
  */
-const setUserFormSubmit = (marker, map) => {
+const setUserFormSubmit = (marker, map, layer) => {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
     setData(
-      () => onSuccess(marker, map),
+      () => onSuccess(marker, map, layer),
       onFail,
       new FormData(evt.target),
     );
   });
-  reset.addEventListener('click', () => {
+  reset.addEventListener('click', (evt) => {
+    evt.preventDefault();
     onReset(marker, map);
+    getData((advertisements) => {
+      generatePins(advertisements, layer);
+    });
   });
 };
 
