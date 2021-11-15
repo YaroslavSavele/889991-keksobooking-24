@@ -1,4 +1,5 @@
 import {showAlert} from './util.js';
+import {makesFiltersInactive} from './forms.js';
 /**
  * Получает данные с сервера о похожих объявлениях,
  * в случае ошибки соединения с сервером, показывает
@@ -11,6 +12,7 @@ const getData = (onSuccess) => {
         return response.json();
       } else {
         showAlert('Не удалось получить данные с сервера');
+        makesFiltersInactive();
       }
     })
     .then((advertisements) => {
@@ -33,7 +35,8 @@ const setData = (onSuccess, onFail, body) => {
   fetch('https://24.javascript.pages.academy/keksobooking',
     {
       method: 'POST',
-      headers: {'Content-Type': 'multipart/form-data'},
+      //headers: {'Content-Type': 'multipart/form-data'},
+      //mode: 'no-cors',
       body,
     },
   ).then((response) => {

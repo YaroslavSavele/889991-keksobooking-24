@@ -1,5 +1,5 @@
-import { setData } from './api.js';
-import {LATITUDE, LONGITUDE} from './map.js';
+import { setData, getData } from './api.js';
+import { generatePins, LATITUDE, LONGITUDE, SCALE } from './map.js';
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -20,7 +20,8 @@ const makesFormsInactive = () => {
     formElement.disabled = true;
   });
   formHeader.disabled = true;
-
+};
+const makesFiltersInactive = () => {
   mapFilter.classList.add('map__filters--disabled');
   filters.forEach((filter) => {
     filter.disabled = true;
@@ -114,7 +115,7 @@ const typePrice = {
  * в зависимости от выбора типа жилья
  */
 export const validatePrice = () => {
-  housingType.addEventListener ('input', () => {
+  housingType.addEventListener('input', () => {
     price.placeholder = typePrice[housingType.value];
     price.min = typePrice[housingType.value];
   });
@@ -165,13 +166,16 @@ const onReset = (marker, map) => {
   map.setView({
     lat: LATITUDE,
     lng: LONGITUDE,
-  }, 13);
+  }, SCALE);
   map.closePopup();
+  //layer.clearLayers();
   price.placeholder = typePrice[housingType.value];
   price.min = typePrice[housingType.value];
 };
 
 const succesTemplate = document.querySelector('#success').content.querySelector('.success');
+
+
 /**
  * Показывает сообщение об успешной отправке данных формы на сервер,
  * при клике в любую сообщения или при нажатии клавиши Escape
@@ -179,21 +183,33 @@ const succesTemplate = document.querySelector('#success').content.querySelector(
  * в первоначальное состояние
  * @param {Object} marker Объект главного маркера
  * @param {Object} map Объект карты
+ * @param {Object} layer Объект слоя маркеров похожих объявлений
  */
-const onSuccess = (marker, map) => {
+const onSuccess = (marker, map, layer) => {
   const successMessage = succesTemplate.cloneNode(true);
   document.body.appendChild(successMessage);
+
+  const onSuccesEscKeydown = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      successMessage.remove();
+      onReset(marker, map);
+      getData((advertisements) => {
+        generatePins(advertisements, layer);
+      });
+      document.removeEventListener('keydown', onSuccesEscKeydown);
+    }
+  };
 
   successMessage.addEventListener('click', () => {
     successMessage.remove();
     onReset(marker, map);
+    getData((advertisements) => {
+      generatePins(advertisements, layer);
+    });
   });
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      successMessage.remove();
-      onReset(marker, map);
-    }
-  });
+
+  document.addEventListener('keydown', onSuccesEscKeydown);
 };
 
 const errorTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -206,17 +222,20 @@ const onFail = () => {
   const errorMessage = errorTemplate.cloneNode(true);
   document.body.appendChild(errorMessage);
   const errorButton = errorMessage.querySelector('.error__button');
+  const onErrorEscKeydown = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      errorMessage.remove();
+      document.removeEventListener('keydown', onErrorEscKeydown);
+    }
+  };
   errorButton.addEventListener('click', () => {
     errorMessage.remove();
   });
   errorMessage.addEventListener('click', () => {
     errorMessage.remove();
   });
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      errorMessage.remove();
-    }
-  });
+  document.addEventListener('keydown', onErrorEscKeydown);
 };
 const reset = form.querySelector('.ad-form__reset');
 /**
@@ -224,25 +243,34 @@ const reset = form.querySelector('.ad-form__reset');
  * отправляет данные формы на сервер.
  * При клике по кнопке очистить очищает поля форм и возвращает карту
  * в первоначальное состояние.
- * @param {*} marker
- * @param {*} map
+ * @param {Object} marker Объект главного маркера
+ * @param {Object} map Объект карты
+ * @param {Object} layer Объект слоя маркеров похожих объявлений
  */
-const setUserFormSubmit = (marker, map) => {
+const setUserFormSubmit = (marker, map, layer) => {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
     setData(
-      () => onSuccess(marker, map),
-      () => onFail(),
+      () => onSuccess(marker, map, layer),
+      onFail,
       new FormData(evt.target),
     );
   });
-  reset.addEventListener('click', () => {
+  reset.addEventListener('click', (evt) => {
+    evt.preventDefault();
     onReset(marker, map);
+    getData((advertisements) => {
+      generatePins(advertisements, layer);
+    });
   });
 };
 
 
-export {makesFormsInactive, makesFormsActive, validateForm, setUserFormSubmit};
-
-
+export {
+  makesFormsInactive,
+  makesFormsActive,
+  validateForm,
+  setUserFormSubmit,
+  makesFiltersInactive
+};

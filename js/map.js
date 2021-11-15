@@ -1,9 +1,11 @@
-import {makesFormsActive} from './forms.js';
-import {renderCard} from './card.js';
-
+import { makesFormsActive } from './forms.js';
+import { renderCard } from './card.js';
+import { filtersByType, filtersByPrice, filtersByRooms, filtersByGuests, filtersByFeatures } from './filters.js';
 
 const LATITUDE = 35.67476;
 const LONGITUDE = 139.74999;
+const SCALE = 13;
+const ADVERTISEMENTS_COUNT = 10;
 
 /**
  * Выводит карту Токио, переводит в формы в активное состояние после инициализации карты.
@@ -17,7 +19,7 @@ const createMap = () => {
     .setView({
       lat: LATITUDE,
       lng: LONGITUDE,
-    }, 13);
+    }, SCALE);
 
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -64,15 +66,27 @@ const showAddress = (marker) => {
     addressField.value = `${lat}, ${lng}`;
   });
 };
+
 /**
- * Добавляет на карту метки 10 похожих объявлений. При клике на каждую из них
- * происходит показ балуна с подробной информацией об объявлении.
+ * Генерирует метки похожих объявлей, фильтрует их по форме фильтрации
+ * и добавляет на карту. При клике на каждую метку
+ * показывается балун с подробной информацией об объявлении.
  * @param {Array} advertisements Массив объектов объявлений
  * @param {Object} map Объект карты
+ * @param {Object} markersGroup Объект слоя карты с маркерами похожих обхъявлений
  */
-const generatePins = (advertisements, map) => {
-  advertisements.forEach((advertisement) => {
-    const {location: {lat, lng}} = advertisement;
+const generatePins = (advertisements, markersGroup) => {
+  markersGroup.clearLayers();
+  let pins = advertisements.slice();
+  pins = pins.filter(filtersByType);
+  pins = pins.filter(filtersByPrice);
+  pins = pins.filter(filtersByRooms);
+  pins = pins.filter(filtersByGuests);
+  pins = pins.filter(filtersByFeatures);
+
+  pins = pins.slice(0, ADVERTISEMENTS_COUNT);
+  pins.forEach((advertisement) => {
+    const { location: { lat, lng } } = advertisement;
     const icon = L.icon({
       iconUrl: './img/pin.svg',
       iconSize: [40, 40],
@@ -88,9 +102,17 @@ const generatePins = (advertisements, map) => {
       },
     );
 
-    marker.addTo(map)
+    marker.addTo(markersGroup)
       .bindPopup(renderCard(advertisement));
   });
 };
 
-export {createMap, getMainMarker, showAddress, generatePins, LATITUDE, LONGITUDE};
+export {
+  createMap,
+  getMainMarker,
+  showAddress,
+  generatePins,
+  LATITUDE,
+  LONGITUDE,
+  SCALE
+};
