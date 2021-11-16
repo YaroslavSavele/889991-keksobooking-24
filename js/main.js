@@ -8,7 +8,7 @@ import {
   setPriceSelect,
   setRoomsSelect,
   setGuestsSelect,
-  setFeaturessSelect
+  setFeaturesSelect
 } from './filters.js';
 
 const RERENDER_DELAY = 500;
@@ -29,8 +29,9 @@ getData((advertisements) => {
   setPriceSelect(debounce(() => generatePins(advertisements, markersGroup), RERENDER_DELAY));
   setRoomsSelect(debounce(() => generatePins(advertisements, markersGroup), RERENDER_DELAY));
   setGuestsSelect(debounce(() => generatePins(advertisements, markersGroup), RERENDER_DELAY));
-  setFeaturessSelect(debounce(() => generatePins(advertisements, markersGroup), RERENDER_DELAY));
+  setFeaturesSelect(debounce(() => generatePins(advertisements, markersGroup), RERENDER_DELAY));
 });
 
 setUserFormSubmit(mainPinMarker, map, markersGroup);
+
 

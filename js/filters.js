@@ -1,26 +1,10 @@
-import {convertsNumberToValue} from './util.js';
+import { convertsNumberToValue } from './util.js';
 
 const housingType = document.querySelector('#housing-type');
 const housingPrice = document.querySelector('#housing-price');
 const housingRooms = document.querySelector('#housing-rooms');
 const housingGuests = document.querySelector('#housing-guests');
 const housingFeatures = document.querySelector('#housing-features');
-const features = housingFeatures.querySelectorAll('input');
-
-/**
- * Возвращает массив отмеченных дополнительных удобств
- * @returns {Array} Массив значений
- */
-const getFeatures = () => {
-  const array = [];
-  features.forEach((feature) => {
-    if (feature.checked) {
-      array.push(feature.value);
-    }
-
-  });
-  return array;
-};
 
 /**
  * Функция-колбэк для фильтрации похожих объявлений по типу жилья
@@ -29,13 +13,13 @@ const getFeatures = () => {
  * @param {Object} offer - деструктурированный объект из данных полученных от сервера
  * @returns {boolean}
  */
-const filtersByType =({offer}) => {
+const filtersByType = ({ offer }) => {
   if (housingType.value === 'any') {
     return true;
   }
-  if (offer.type === housingType.value) {
-    return true;
-  }
+
+  return offer.type === housingType.value;
+
 };
 
 /**
@@ -45,7 +29,7 @@ const filtersByType =({offer}) => {
  * @param {Object} offer - деструктурированный объект из данных полученных от сервера
  * @returns {boolean}
  */
-const filtersByPrice =({offer}) => {
+const filtersByPrice = ({ offer }) => {
   if (housingPrice.value === 'any') {
     return true;
   }
@@ -61,7 +45,7 @@ const filtersByPrice =({offer}) => {
  * @param {Object} offer - деструктурированный объект из данных полученных от сервера
  * @returns {boolean}
  */
-const filtersByRooms =({offer}) => {
+const filtersByRooms = ({ offer }) => {
   if (housingRooms.value === 'any') {
     return true;
   }
@@ -77,7 +61,7 @@ const filtersByRooms =({offer}) => {
  * @param {Object} offer - деструктурированный объект из данных полученных от сервера
  * @returns {boolean}
  */
-const filtersByGuests =({offer}) => {
+const filtersByGuests = ({ offer }) => {
   if (housingGuests.value === 'any') {
     return true;
   }
@@ -85,7 +69,7 @@ const filtersByGuests =({offer}) => {
     return true;
   }
 };
-
+//const checkListElements = housingFeatures.querySelectorAll('input[type="checkbox"]:checked');
 /**
  * Функция-колбэк для фильтрации похожих объявлений по дополнительным удобствам
  * возвращает true если дополнительные удобства в объявлении совпадают с выбранными в форме,
@@ -93,18 +77,17 @@ const filtersByGuests =({offer}) => {
  * @param {Object} offer - деструктурированный объект из данных полученных от сервера
  * @returns {boolean}
  */
-const filtersByFeatures =({offer}) => {
-  const checkListElements = getFeatures();
+const filtersByFeatures = ({ offer }) => {
+  const checkListElements = Array.from(housingFeatures.querySelectorAll('input[type="checkbox"]:checked'));
   if (checkListElements.length === 0) {
     return true;
   }
-  if (checkListElements.length) {
-    checkListElements.forEach((feature) => {
-      if (offer.features.includes(feature)) {
-        return true;
-      }
-    });
-  }
+  if (offer.features !== undefined) {
+    return checkListElements.every((checkListElement) => offer.features.some((feature) => feature === checkListElement.value));
+
+
+  } else { return false; }
+
 };
 
 
@@ -157,7 +140,7 @@ const setGuestsSelect = (cb) => {
  * в форме фильтрации
  * @param {myCallback} cb - Функция отрисовки пинов
  */
-const setFeaturessSelect = (cb) => {
+const setFeaturesSelect = (cb) => {
   housingFeatures.addEventListener('input', () => {
     cb();
   });
@@ -169,7 +152,7 @@ export {
   setPriceSelect,
   setRoomsSelect,
   setGuestsSelect,
-  setFeaturessSelect,
+  setFeaturesSelect,
   filtersByType,
   filtersByPrice,
   filtersByRooms,
