@@ -83,7 +83,6 @@ const generatePins = (advertisements, markersGroup) => {
   pins = pins.filter(filtersByRooms);
   pins = pins.filter(filtersByGuests);
   pins = pins.filter(filtersByFeatures);
-
   pins = pins.slice(0, ADVERTISEMENTS_COUNT);
   pins.forEach((advertisement) => {
     const { location: { lat, lng } } = advertisement;

@@ -35,8 +35,6 @@ const setData = (onSuccess, onFail, body) => {
   fetch('https://24.javascript.pages.academy/keksobooking',
     {
       method: 'POST',
-      //headers: {'Content-Type': 'multipart/form-data'},
-      //mode: 'no-cors',
       body,
     },
   ).then((response) => {

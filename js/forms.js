@@ -12,7 +12,7 @@ const filters = document.querySelectorAll('.map__filter');
 const mapFeatures = document.querySelector('.map__features');
 
 /**
- * Делает форму и фильтр неактивными, блокирует доступ и изменение полей форм
+ * Делает форму отправки объявления неактивной, блокирует доступ и изменение полей формы
  */
 const makesFormsInactive = () => {
   form.classList.add('ad-form--disabled');
@@ -21,6 +21,10 @@ const makesFormsInactive = () => {
   });
   formHeader.disabled = true;
 };
+
+/**
+ * Делает фильтр неактивным, блокирует доступ и изменение полей фильтра
+ */
 const makesFiltersInactive = () => {
   mapFilter.classList.add('map__filters--disabled');
   filters.forEach((filter) => {
@@ -55,7 +59,7 @@ const titleInput = document.querySelector('#title');
  * если текст короче минимальной длины, подсказывает сколько еще символов небходимо ввести,
  * если длина текста больше максимальной, подсказывет сколько символов нужно удалить
  */
-export const validateTitle = () => {
+const validateTitle = () => {
   titleInput.addEventListener('input', () => {
     const titleLength = titleInput.value.length;
 
@@ -89,7 +93,7 @@ const roomsGuests = {
 * - 3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»;
 * - 100 комнат — «не для гостей».
  */
-export const validateCountGuest = () => {
+const validateCountGuest = () => {
   roomNamber.addEventListener('input', () => {
     Object.values(capacity).forEach((option) => {
       option.disabled = true;
@@ -114,7 +118,7 @@ const typePrice = {
  * Изменяет минимальное значение поля "Цена за ночь",
  * в зависимости от выбора типа жилья
  */
-export const validatePrice = () => {
+const validatePrice = () => {
   housingType.addEventListener('input', () => {
     price.placeholder = typePrice[housingType.value];
     price.min = typePrice[housingType.value];
@@ -129,7 +133,7 @@ const filsetTime = document.querySelector('.ad-form__element--time');
  * изменении значения одного поля во втором
  * автоматически выберается соответствующее ему значение
  */
-export const synchronizesTime = () => {
+const synchronizesTime = () => {
   filsetTime.addEventListener('input', (evt) => {
     if (evt.target === timein) {
       timeout.value = evt.target.value;
@@ -138,6 +142,7 @@ export const synchronizesTime = () => {
     }
   });
 };
+
 /**
  * Объединяет функции, валидирующие поля формы
  */
@@ -237,6 +242,7 @@ const onFail = () => {
   });
   document.addEventListener('keydown', onErrorEscKeydown);
 };
+
 const reset = form.querySelector('.ad-form__reset');
 /**
  * При клике по кнопке опубликовать
