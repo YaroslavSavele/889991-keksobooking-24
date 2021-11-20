@@ -1,5 +1,6 @@
 import { setData, getData } from './api.js';
 import { generatePins, LATITUDE, LONGITUDE, SCALE } from './map.js';
+import { previewAvatar, previewPhoto } from './images.js';
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -160,7 +161,7 @@ const validateForm = () => {
  * @param {Object} marker Объект маркера
  * @param {Object} map Объект карты
  */
-const onReset = (marker, map) => {
+const resetsValues = (marker, map) => {
   form.reset();
   mapFilter.reset();
   marker.setLatLng({
@@ -176,6 +177,12 @@ const onReset = (marker, map) => {
   //layer.clearLayers();
   price.placeholder = typePrice[housingType.value];
   price.min = typePrice[housingType.value];
+  previewAvatar.src = 'img/muffin-grey.svg';
+  previewAvatar.width = 40;
+  previewAvatar.height = 44;
+  previewPhoto.src = 'img/muffin-grey.svg';
+  previewPhoto.width = 40;
+  previewPhoto.height = 44;
 };
 
 const succesTemplate = document.querySelector('#success').content.querySelector('.success');
@@ -198,22 +205,22 @@ const onSuccess = (marker, map, layer) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       successMessage.remove();
-      onReset(marker, map);
+      resetsValues(marker, map);
       getData((advertisements) => {
         generatePins(advertisements, layer);
       });
       document.removeEventListener('keydown', onSuccesEscKeydown);
     }
   };
-
-  successMessage.addEventListener('click', () => {
+  const closesMessageOnClick = () => {
     successMessage.remove();
-    onReset(marker, map);
+    resetsValues(marker, map);
     getData((advertisements) => {
       generatePins(advertisements, layer);
     });
-  });
-
+    successMessage.removeEventListener('click', closesMessageOnClick);
+  };
+  successMessage.addEventListener('click', closesMessageOnClick);
   document.addEventListener('keydown', onSuccesEscKeydown);
 };
 
@@ -265,7 +272,7 @@ const setUserFormSubmit = (marker, map, layer) => {
   });
   reset.addEventListener('click', (evt) => {
     evt.preventDefault();
-    onReset(marker, map);
+    resetsValues(marker, map);
     getData((advertisements) => {
       generatePins(advertisements, layer);
     });
