@@ -205,15 +205,22 @@ const onSuccess = (marker, map, layer) => {
       document.removeEventListener('keydown', onSuccesEscKeydown);
     }
   };
-
-  successMessage.addEventListener('click', () => {
+  const closesMessageOnClick = () => {
     successMessage.remove();
     onReset(marker, map);
     getData((advertisements) => {
       generatePins(advertisements, layer);
     });
-  });
-
+    successMessage.removeEventListener('click', closesMessageOnClick);
+  };
+  //successMessage.addEventListener('click', () => {
+  //  successMessage.remove();
+  //  onReset(marker, map);
+  //  getData((advertisements) => {
+  //    generatePins(advertisements, layer);
+  //  });
+  //});
+  successMessage.addEventListener('click', closesMessageOnClick);
   document.addEventListener('keydown', onSuccesEscKeydown);
 };
 

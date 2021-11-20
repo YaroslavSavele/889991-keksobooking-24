@@ -1,6 +1,6 @@
 import { makesFormsActive } from './forms.js';
 import { renderCard } from './card.js';
-import { filtersByType, filtersByPrice, filtersByRooms, filtersByGuests, filtersByFeatures } from './filters.js';
+import { filterRules } from './filters.js';
 
 const LATITUDE = 35.67476;
 const LONGITUDE = 139.74999;
@@ -67,6 +67,10 @@ const showAddress = (marker) => {
   });
 };
 
+const filterForm = document.querySelector('.map__filters');
+const filters = Array.from(filterForm.children);
+
+
 /**
  * Генерирует метки похожих объявлей, фильтрует их по форме фильтрации
  * и добавляет на карту. При клике на каждую метку
@@ -77,14 +81,19 @@ const showAddress = (marker) => {
  */
 const generatePins = (advertisements, markersGroup) => {
   markersGroup.clearLayers();
-  let pins = advertisements.slice();
-  pins = pins.filter(filtersByType);
-  pins = pins.filter(filtersByPrice);
-  pins = pins.filter(filtersByRooms);
-  pins = pins.filter(filtersByGuests);
-  pins = pins.filter(filtersByFeatures);
-  pins = pins.slice(0, ADVERTISEMENTS_COUNT);
-  pins.forEach((advertisement) => {
+  const pins = advertisements.slice();
+  const filterPins = () => {
+    const filtredPins = [];
+    let result;
+    for (let i = 0; i < pins.length && filtredPins.length < ADVERTISEMENTS_COUNT; i++) {
+      result = filters.every((filter) => filterRules[filter.id](pins[i], filter));
+      if (result) {
+        filtredPins.push(pins[i]);
+      }
+    }
+    return filtredPins;
+  };
+  filterPins().forEach((advertisement) => {
     const { location: { lat, lng } } = advertisement;
     const icon = L.icon({
       iconUrl: './img/pin.svg',
@@ -106,11 +115,22 @@ const generatePins = (advertisements, markersGroup) => {
   });
 };
 
+/**
+ * Передает колбэк при изменении значений в форме фильтров
+ * @param {myCallback} cb - Функция отрисовки пинов
+ */
+const setFilterFormChange = (cb) => {
+  filterForm.addEventListener('change', () => {
+    cb();
+  });
+};
+
 export {
   createMap,
   getMainMarker,
   showAddress,
   generatePins,
+  setFilterFormChange,
   LATITUDE,
   LONGITUDE,
   SCALE
