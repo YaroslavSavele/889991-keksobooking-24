@@ -22,17 +22,6 @@ const filterRules = {
   },
 };
 
-
 export {
-  //setTypeSelect,
-  //setPriceSelect,
-  //setRoomsSelect,
-  //setGuestsSelect,
-  //setFeaturesSelect,
-  //filtersByType,
-  //filtersByPrice,
-  //filtersByRooms,
-  //filtersByGuests,
-  //filtersByFeatures,
   filterRules
 };
