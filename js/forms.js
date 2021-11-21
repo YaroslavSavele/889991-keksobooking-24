@@ -210,7 +210,6 @@ const onSuccess = (marker, map, layer) => {
         generatePins(advertisements, layer);
       });
       document.removeEventListener('keydown', onSuccesEscKeydown);
-      //successMessage.removeEventListener('click', closesMessageOnClick);
     }
   };
   const closesMessageOnClick = () => {
