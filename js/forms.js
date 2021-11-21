@@ -210,6 +210,7 @@ const onSuccess = (marker, map, layer) => {
         generatePins(advertisements, layer);
       });
       document.removeEventListener('keydown', onSuccesEscKeydown);
+      //successMessage.removeEventListener('click', closesMessageOnClick);
     }
   };
   const closesMessageOnClick = () => {
@@ -219,6 +220,7 @@ const onSuccess = (marker, map, layer) => {
       generatePins(advertisements, layer);
     });
     successMessage.removeEventListener('click', closesMessageOnClick);
+    document.removeEventListener('keydown', onSuccesEscKeydown);
   };
   successMessage.addEventListener('click', closesMessageOnClick);
   document.addEventListener('keydown', onSuccesEscKeydown);
@@ -243,9 +245,11 @@ const onFail = () => {
   };
   errorButton.addEventListener('click', () => {
     errorMessage.remove();
+    document.removeEventListener('keydown', onErrorEscKeydown);
   });
   errorMessage.addEventListener('click', () => {
     errorMessage.remove();
+    document.removeEventListener('keydown', onErrorEscKeydown);
   });
   document.addEventListener('keydown', onErrorEscKeydown);
 };
